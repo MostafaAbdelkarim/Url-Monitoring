@@ -1,0 +1,5 @@
+{
+    "jwtPrivateKey": "bosta_jwtPrivateKey",
+    "userMail": "userMailEnv",
+    "userPass": "userPassEnv"
+}
