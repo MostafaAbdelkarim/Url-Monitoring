@@ -9,7 +9,7 @@ const createCheck = async (req, res) => {
         const userPayload = decode(token);
         
         const user = await User.findById(userPayload.userId);
-        if(!user) return;
+        if(!user) return error = { message: 'User with such Id not found'};
 
         let check = new Check({
             userId: req.userId,
@@ -39,7 +39,7 @@ const getCheck = async (req, res) => {
         //return check
     }
     catch(error){
-        //log error
+        console.log('getCheck Service: ' + error);
     }
 };
 
@@ -52,7 +52,7 @@ const updateCheck = async (req, res) => {
         //return updated check
     }
     catch(error){
-        //log error
+        console.log('updateCheck Service: ' + error);
     }
 };
 
@@ -64,7 +64,7 @@ const deleteCheck = async (req, res) => {
         //return 200 code 
     }
     catch(error){
-        //log error
+        console.log('deleteCheck Service: ' + error);
     }
 };
 

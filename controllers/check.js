@@ -3,7 +3,8 @@ const _ = require('lodash');
 
 const createCheck = async (req, res) => {
     try{
-        const {check, report} = result = await CheckService.createCheck(req.body);
+        const {check, report, error} = result = await CheckService.createCheck(req.body);
+        if(result.message) return res.status(400).send(result.message);
         return res.status(201).send(_.pick(result.check, ['name', 'url']));
     }
     catch (error){
@@ -25,7 +26,7 @@ const getCheck = async (req, res) => {
 
 const updateCheck = async (req, res) => {
     try{
-        const user = await CheckService.updateCheck(req.params.id);
+        const user = await CheckService.updateCheck(req);
         res.status(200).send(user);
     }
     catch(error){
