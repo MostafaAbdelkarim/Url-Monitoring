@@ -24,9 +24,9 @@ const mailOptions = function (userMail, userName, emailToken) {
 };
 
 
-function sendCustomMail(customEmailOption){
+function sendCustomMail(mailOptions){
     try{
-        transporter.sendMail(customEmailOption, function(error, info){
+        transporter.sendMail(mailOptions, function(error, info){
             if(error){
                 console.log('Mail ' + error);
             }else{
