@@ -7,10 +7,7 @@ const emailVerifier = require('../middleware/emailVerifier');
 const createUser = async (req, res) => {
 
     let user = await User.findOne({email: req.email});
-    if(user) {
-        const error = { message: 'User already exists'};
-        return error;
-    };
+    if(user) return error = { message: 'User already exists'};
     
     const salt = await bcrypt.genSalt(10);
     encryptedPassword = await bcrypt.hash(req.password, salt);
@@ -23,12 +20,12 @@ const createUser = async (req, res) => {
     });
     await user.save();
 
-    console.log('EmailToken: ' + user.emailToken);
+    // console.log('EmailToken: ' + user.emailToken);
 
     const mailOptions = emailVerifier.mailOptions(user.email, user.name, user.emailToken);
-    emailSent = await emailVerifier.sendCustomMail(mailOptions);
+    emailSent = emailVerifier.sendCustomMail(mailOptions);
 
-    const token = user.generateAuthToken();
+    //const token = user.generateAuthToken();
     return {user, token};
 };
 
@@ -45,7 +42,7 @@ const getAllUsers = async () => {
 const getUserById = async (req, res) =>{
     try{
         const user = await User.findById(req);
-        return user;
+        if(!user) return error = { message: 'User with given Id not found'};
     }
     catch(error){
         console.log(error);
@@ -59,7 +56,7 @@ const updateUserById = async (req, res) =>{
             email: req.body.email,
             password: req.body.password
         }, {new: true});
-        if(!user) return console.log('Could not find user with given ID');
+        if(!user) return error = { message: 'Could not find user with given ID'} ;
         return user;
     }
     catch(error){
@@ -70,7 +67,7 @@ const updateUserById = async (req, res) =>{
 const deleteUserById = async (req, res) =>{
     try{
         const user = await User.findByIdAndRemove(req.params.id);
-        if(!user) return console.log('Could not find user with given ID');
+        if(!user) return error = { message: 'Could not find user with given ID'};
         return user;
     }
     catch(error){
@@ -81,10 +78,10 @@ const deleteUserById = async (req, res) =>{
 const loginUser = async (req, res) => {
     try{
         let user = await User.findOne({email: req.email});
-        if(!user) return;
+        if(!user) return error = { message: 'Could not find user with given Id.'};
 
         const validPass = await bcrypt.compare(req.password, user.password);
-        if(!validPass) return;
+        if(!validPass) return error = { message: 'Password Incorrect.'};
 
         const token = user.generateAuthToken();
         return {token, user} ;

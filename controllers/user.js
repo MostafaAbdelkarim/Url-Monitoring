@@ -27,7 +27,8 @@ const getAllUsers = async (req, res) => {
 
 const getUserById = async (req, res) => {
     try{
-        const user = await UserService.getUserById(req.params.id);
+        const {user, error} = result = await UserService.getUserById(req.params.id);
+        if(result.message) return res.status(400).send(result.message);
         res.status(200).send(user);
     }
     catch(error){
@@ -38,7 +39,8 @@ const getUserById = async (req, res) => {
 
 const updateUserById = async (req, res) => {
     try{
-        const user = await UserService.updateUserById(req);
+        const {user, error} = result = await UserService.updateUserById(req);
+        if(result.message) return res.status(400).send(result.message);
         res.status(200).send(user);
     }
     catch(error){
@@ -49,7 +51,8 @@ const updateUserById = async (req, res) => {
 
 const deleteUserById = async (req, res) => {
     try{
-        const user = await UserService.deleteUserById(req);
+        const {user, error} =  result = await UserService.deleteUserById(req);
+        if(result.message) return res.status(400).send(result.message);
         res.status(200).send(user);
     }
     catch(error){
@@ -60,12 +63,13 @@ const deleteUserById = async (req, res) => {
 
 const loginUser = async (req, res) => {
     try{
-        const result = {user, token} = await UserService.loginUser(req.body);
+        const result = {user, token, error} = await UserService.loginUser(req.body);
+        if(result.message) return res.status(400).send(result.message);
         return res.status(200).cookie('jwtToken', result.token).send(`Welcome ${user.name}`);
     }
     catch (error){
         console.error(error);
-        res.status(400).send(`Incorrect Password!!`);
+        res.status(500).send(`Internal Server Error`);
     };
 };
 
@@ -86,7 +90,7 @@ const verifyEmail = async (req, res) => {
         return res.status(200).send('Emailed Verified');
     }
     catch (error){
-        console.log('CONTROLLER VERIFY: ' + error)
+        console.log('CONTROLLER VERIFY: ' + error);
     }
 };
 
