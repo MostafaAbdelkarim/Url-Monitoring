@@ -8,11 +8,11 @@ const createCheck = async (req, res) => {
         const token = req.cookies['jwtToken'];
         const userPayload = decode(token);
         
-        const user = await User.findById(userPayload.userId);
+        const user = await User.findById(userPayload._id);
         if(!user) return error = { message: 'User with such Id not found'};
 
         let check = new Check({
-            userId: req.userId,
+            userId: userPayload._id,
             name: req.name,
             url: req.url,
             protocol: req.protocol
@@ -34,9 +34,13 @@ const createCheck = async (req, res) => {
 
 const getCheck = async (req, res) => {
     try{
-        //decode the payload of jwt to get the userId else return
-        //search db if there exists check with checkId and userId else return
-        //return check
+        const token = req.cookies['jwtToken'];
+        const userPayload = decode(token);
+
+        const check = await Check.findOne({userId: userPayload._id, name: req.name});
+        if(!check) return error = { message: 'check not found!'};
+
+        return check;
     }
     catch(error){
         console.log('getCheck Service: ' + error);
@@ -45,11 +49,36 @@ const getCheck = async (req, res) => {
 
 const updateCheck = async (req, res) => {
     try{
-        //decode and get userId in variable else return
-        //find check in db using checkId and userId else return
-        //update check info
-        //save to db
-        //return updated check
+        const token = req.cookies['jwtToken'];
+        const userPayload = decode(token);
+
+        let check = await Check.findOne({userId: userPayload._id});
+        if(!check) return error = { message: 'check not found!'};
+
+        check = await Check.findOneAndUpdate({userId: userPayload._id},{
+            name: req.name,
+            url: req.url,
+            prototype: req.prototype,
+            path: req.path,
+            port: req.port,
+            webhook: req.webhook,
+            timeout: req.timout,
+            interval: req.interval,
+            threshold: req.threshold,
+            authentication: {
+                username: req.username,
+                password: req.password
+            },
+            httpHeaders: {},
+            assert: {
+                statusCode: req.statusCode
+            },
+            tags: req.tags,
+            ignoreSSL: req.ignoreSSL
+        });
+
+        check = await Check.save();
+        return check;
     }
     catch(error){
         console.log('updateCheck Service: ' + error);
@@ -58,10 +87,16 @@ const updateCheck = async (req, res) => {
 
 const deleteCheck = async (req, res) => {
     try{
-        //decode and get userId in variable else return
-        //findAndDelete check if exists in db passing checkId and userId else return
-        //remove related check report from reports collection.
-        //return 200 code 
+        const token = req.cookies['jwtToken'];
+        const userPayload = decode(token);
+
+        let check = await Check.findByIdAndDelete({userId: userPayload._id});
+        if(!check) return error = { message: 'check not found!'};
+
+        let report = await Report.findByIdAndDelete({checkId: userPayload._id});
+        if(!report) return error = { message: 'report not found!'};
+
+        return sucess = { message: 'Check with related report deleted successfully' };
     }
     catch(error){
         console.log('deleteCheck Service: ' + error);

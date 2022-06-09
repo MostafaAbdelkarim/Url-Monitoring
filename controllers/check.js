@@ -15,8 +15,9 @@ const createCheck = async (req, res) => {
 
 const getCheck = async (req, res) => {
     try{
-        const user = CheckService.getCheck();
-        res.status(200).send(user);
+        const {check, error} = await CheckService.getCheck();
+        if(error) return res.status(400).send(error.message); 
+        res.status(200).send(check);
     }
     catch(error){
         console.log(error);
@@ -26,8 +27,9 @@ const getCheck = async (req, res) => {
 
 const updateCheck = async (req, res) => {
     try{
-        const user = await CheckService.updateCheck(req);
-        res.status(200).send(user);
+        const {check, error} = await CheckService.updateCheck(req);
+        if(error) return res.status(400).send(error.message);
+        res.status(200).send(check);
     }
     catch(error){
         console.log(error);
@@ -37,8 +39,9 @@ const updateCheck = async (req, res) => {
 
 const deleteCheck = async (req, res) => {
     try{
-        const user = await CheckService.deleteCheck(req);
-        res.status(200).send(user);
+        const {check, sucess, error} = await CheckService.deleteCheck(req);
+        if(sucess) return res.status(200).send(success.message);
+        if(error.message) return res.status(400).send(error.message);
     }
     catch(error){
         console.log(error);

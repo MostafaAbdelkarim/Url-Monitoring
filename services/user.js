@@ -56,7 +56,7 @@ const updateUserById = async (req, res) =>{
             email: req.body.email,
             password: req.body.password
         }, {new: true});
-        if(!user) return error = { message: 'Could not find user with given ID'} ;
+        if(!user) return error = { message: 'Could not find user with given ID'};
         return user;
     }
     catch(error){
