@@ -7,9 +7,11 @@ const emailVerifier = require('../middleware/emailVerifier');
 const createUser = async (req, res) => {
 
     let user = await User.findOne({email: req.email});
-    if(user) return;
+    if(user) {
+        const error = { message: 'User already exists'};
+        return error;
+    };
     
-    // user = new User(_.pick(req, ['name', 'email', 'password']));
     const salt = await bcrypt.genSalt(10);
     encryptedPassword = await bcrypt.hash(req.password, salt);
     user = new User ({
@@ -21,24 +23,10 @@ const createUser = async (req, res) => {
     });
     await user.save();
 
-    let mailOptions = {
-        from: '"Verify Your Email" <roller1911@hotmail.com>',
-        to: user.email,
-        subject: 'BostaAssessment-VerifyYourEmail',
-        html: `<h2>Thanks ${user.name} for registering at BostaAssessment</h2>
-                <h3>Please verify your mail to continue<h4>
-                <a href= "http://localhost:3000/api/users/verify-email?token=${user.emailToken}">Verify Link</a>`
-    };
-
     console.log('EmailToken: ' + user.emailToken);
-    emailVerifier.transporter.sendMail(mailOptions, function(error, info){
-        if(error){
-            console.log('SERVICE error: ' + error);
-        }else{
-            console.log('Verification email is send to you account');
-        }
 
-    });
+    const mailOptions = emailVerifier.mailOptions(user.email, user.name, user.emailToken);
+    emailSent = await emailVerifier.sendCustomMail(mailOptions);
 
     const token = user.generateAuthToken();
     return {user, token};

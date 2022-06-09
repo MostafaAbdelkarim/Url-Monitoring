@@ -12,4 +12,31 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-module.exports = { transporter };
+const mailOptions = function (userMail, userName, emailToken) {
+    return {
+    from: '"Verify Your Email" <YourMail@hotmail.com>',
+    to: userMail,
+    subject: 'BostaAssessment-VerifyYourEmail',
+    html: `<h2>Thanks ${userName} for registering at BostaAssessment</h2>
+            <h3>Please verify your mail to continue<h4>
+            <a href= "http://localhost:3000/api/users/verify-email?token=${emailToken}">Verify Link</a>`
+    };
+};
+
+
+function sendCustomMail(customEmailOption){
+    try{
+        transporter.sendMail(customEmailOption, function(error, info){
+            if(error){
+                console.log('Mail ' + error);
+            }else{
+                console.log('Verification email is send to you account' + info);
+            }
+        });
+    }
+    catch(error){
+        console.log(error);
+    }
+};
+
+module.exports = { mailOptions, sendCustomMail };
