@@ -20,12 +20,12 @@ const createUser = async (req, res) => {
     });
     await user.save();
 
-    // console.log('EmailToken: ' + user.emailToken);
+    console.log('EmailToken: ' + user.emailToken);
 
     const mailOptions = emailVerifier.mailOptions(user.email, user.name, user.emailToken);
     emailSent = emailVerifier.sendCustomMail(mailOptions);
 
-    //const token = user.generateAuthToken();
+    const token = user.generateAuthToken();
     return {user, token};
 };
 

@@ -76,6 +76,7 @@ const loginUser = async (req, res) => {
 const userLogout = async (req, res) => {
     try{
         res.cookie('jwtToken', "", {maxAge: 1});
+        res.clearCookie('jwtToken');
         res.status(200).send('Logout Success');
     }
     catch (error){

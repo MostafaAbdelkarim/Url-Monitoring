@@ -7,15 +7,14 @@ const createCheck = async (req, res) => {
     try{
         const token = req.cookies['jwtToken'];
         const userPayload = decode(token);
-        
         const user = await User.findById(userPayload._id);
         if(!user) return error = { message: 'User with such Id not found'};
 
         let check = new Check({
             userId: userPayload._id,
-            name: req.name,
-            url: req.url,
-            protocol: req.protocol
+            name: req.body.name,
+            url: req.body.url,
+            protocol: req.body.protocol
         });
         check = await check.save();
 
@@ -32,15 +31,15 @@ const createCheck = async (req, res) => {
     }
 };
 
-const getCheck = async (req, res) => {
+const getAllChecks = async (req, res) => {
     try{
         const token = req.cookies['jwtToken'];
         const userPayload = decode(token);
 
-        const check = await Check.findOne({userId: userPayload._id});
+        const check = await Check.find({userId: userPayload._id});
         if(!check) return error = { message: 'check not found!'};
 
-        return check;
+        return {check};
     }
     catch(error){
         console.log('getCheck Service: ' + error);
@@ -77,7 +76,7 @@ const updateCheck = async (req, res) => {
             ignoreSSL: req.ignoreSSL
         });
 
-        check = await Check.save();
+        check = await check.save();
         return check;
     }
     catch(error){
@@ -118,4 +117,4 @@ const getChecksByTag = async (req, res) => {
     }
 };
 
-module.exports = {createCheck, getCheck, updateCheck, deleteCheck, getChecksByTag};
+module.exports = {createCheck, getAllChecks, updateCheck, deleteCheck, getChecksByTag};

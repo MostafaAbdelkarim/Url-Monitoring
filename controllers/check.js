@@ -3,7 +3,7 @@ const _ = require('lodash');
 
 const createCheck = async (req, res) => {
     try{
-        const {check, report, error} = await CheckService.createCheck(req.body);
+        const {check, report, error} = await CheckService.createCheck(req);
         if(error) return res.status(400).send(error.message);
         return res.status(201).send(_.pick(check, ['name', 'url']));
     }
@@ -13,9 +13,9 @@ const createCheck = async (req, res) => {
     };
 };
 
-const getCheck = async (req, res) => {
+const getAllChecks = async (req, res) => {
     try{
-        const {check, error} = await CheckService.getCheck();
+        const {check, error} = await CheckService.getAllChecks(req);
         if(error) return res.status(400).send(error.message); 
         res.status(200).send(check);
     }
@@ -61,4 +61,4 @@ const getChecksByTag = async (req, res) => {
     };
 };
 
-module.exports = {createCheck, getCheck, updateCheck, deleteCheck, getChecksByTag};
+module.exports = {createCheck, getAllChecks, updateCheck, deleteCheck, getChecksByTag};

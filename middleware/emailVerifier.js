@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const mailOptions = function (userMail, userName, emailToken) {
-    return {
+    let options =  {
     from: '"Verify Your Email" <YourMail@hotmail.com>',
     to: userMail,
     subject: 'BostaAssessment-VerifyYourEmail',
@@ -21,12 +21,13 @@ const mailOptions = function (userMail, userName, emailToken) {
             <h3>Please verify your mail to continue<h4>
             <a href= "http://localhost:3000/api/users/verify-email?token=${emailToken}">Verify Link</a>`
     };
+    return options;
 };
 
 
 function sendCustomMail(mailOptions){
     try{
-        transporter.sendMail(mailOptions, function(error, info){
+        transporter.sendMail(mailOptions.options, function(error, info){
             if(error){
                 console.log('Mail ' + error);
             }else{
