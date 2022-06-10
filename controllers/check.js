@@ -3,9 +3,9 @@ const _ = require('lodash');
 
 const createCheck = async (req, res) => {
     try{
-        const {check, report, error} = await CheckService.createCheck(req);
-        if(error) return res.status(400).send(error.message);
-        return res.status(201).send(_.pick(check, ['name', 'url']));
+        const result = {check, report, error} = await CheckService.createCheck(req);
+        if(result.message) return res.status(400).send(result.message);
+        return res.status(201).send(_.pick(result.check, ['name', 'url']));
     }
     catch (error){
         console.log(error);
@@ -15,9 +15,9 @@ const createCheck = async (req, res) => {
 
 const getAllChecks = async (req, res) => {
     try{
-        const {check, error} = await CheckService.getAllChecks(req);
-        if(error) return res.status(400).send(error.message); 
-        res.status(200).send(check);
+        const result = {check, error} = await CheckService.getAllChecks(req);
+        if(result.message) return res.status(400).send(result.message); 
+        res.status(200).send(result.check);
     }
     catch(error){
         console.log(error);
@@ -27,9 +27,9 @@ const getAllChecks = async (req, res) => {
 
 const updateCheck = async (req, res) => {
     try{
-        const {check, error} = await CheckService.updateCheck(req);
-        if(error) return res.status(400).send(error.message);
-        res.status(200).send(check);
+        const result = {check, error} = await CheckService.updateCheck(req);
+        if(result.message) return res.status(400).send(result.message);
+        res.status(200).send(result.check);
     }
     catch(error){
         console.log(error);

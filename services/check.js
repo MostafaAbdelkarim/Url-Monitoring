@@ -7,17 +7,41 @@ const createCheck = async (req, res) => {
     try{
         const token = req.cookies['jwtToken'];
         const userPayload = decode(token);
-        const user = await User.findById(userPayload._id);
-        if(!user) return error = { message: 'User with such Id not found'};
 
-        let check = new Check({
+        //checking if the signed in user exists in the db
+        const user = await User.findById(userPayload._id);
+        if(!user) return {error} = { message: 'User with such Id not found'};
+
+        //checking if a check with same url exists
+        let check = await Check.findOne({url: req.body.url});
+        if(check) return { error } = { message: 'Check already exists'};
+
+        //creating new check
+        check = new Check({
             userId: userPayload._id,
             name: req.body.name,
             url: req.body.url,
-            protocol: req.body.protocol
+            protocol: req.body.protocol,
+            path: req.body.path,
+            port: req.body.port,
+            webhook: req.body.webhook,
+            timeout: req.body.timout,
+            interval: req.body.interval,
+            threshold: req.body.threshold,
+            authentication: {
+                username: req.body.authentication.username,
+                password: req.body.authentication.password
+            },
+            httpHeaders: req.body.httpHeaders,
+            assert: {
+                statusCode: req.body.statusCode
+            },
+            tags: req.body.tags,
+            ignoreSSL: req.body.ignoreSSL
         });
         check = await check.save();
 
+        //creating new report for the created check
         let report = new Report({
             checkId: check._id,
             status: 200
@@ -55,25 +79,25 @@ const updateCheck = async (req, res) => {
         if(!check) return error = { message: 'check not found!'};
 
         check = await Check.findOneAndUpdate({userId: userPayload._id},{
-            name: req.name,
-            url: req.url,
-            prototype: req.prototype,
-            path: req.path,
-            port: req.port,
-            webhook: req.webhook,
-            timeout: req.timout,
-            interval: req.interval,
-            threshold: req.threshold,
+            name: req.body.name,
+            url: req.body.url,
+            prototype: req.body.prototype,
+            path: req.body.path,
+            port: req.body.port,
+            webhook: req.body.webhook,
+            timeout: req.body.timout,
+            interval: req.body.interval,
+            threshold: req.body.threshold,
             authentication: {
-                username: req.username,
-                password: req.password
+                username: req.body.username,
+                password: req.body.password
             },
             httpHeaders: {},
             assert: {
-                statusCode: req.statusCode
+                statusCode: req.body.statusCode
             },
-            tags: req.tags,
-            ignoreSSL: req.ignoreSSL
+            tags: req.body.tags,
+            ignoreSSL: req.body.ignoreSSL
         });
 
         check = await check.save();

@@ -6,7 +6,7 @@ const createUser = async (req, res) => {
     try{
         const result = {user, token, error} = await UserService.createUser(req.body);
         if(result.message) return res.status(400).send(result.message);
-        return res.status(201).header('x-auth-token', result.token).send(_.pick(result.user, ['_id', 'name', 'email']));
+        return res.status(201).send(_.pick(result.user, ['_id', 'name', 'email']));
     }
     catch (error){
         console.log(error);
