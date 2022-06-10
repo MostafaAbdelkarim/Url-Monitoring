@@ -37,7 +37,7 @@ const getCheck = async (req, res) => {
         const token = req.cookies['jwtToken'];
         const userPayload = decode(token);
 
-        const check = await Check.findOne({userId: userPayload._id, name: req.name});
+        const check = await Check.findOne({userId: userPayload._id});
         if(!check) return error = { message: 'check not found!'};
 
         return check;
@@ -103,4 +103,19 @@ const deleteCheck = async (req, res) => {
     }
 };
 
-module.exports = {createCheck, getCheck, updateCheck, deleteCheck};
+const getChecksByTag = async (req, res) => {
+    try{
+        const token = req.cookies['jwtToken'];
+        const userPayload = decode(token);
+
+        let check = await Check.find({userId: userPayload._id, tags: {$in: req.tags} });
+        if(!check) return error = { message: 'check search by tags found!'};
+        
+        return check;
+    }
+    catch(error){
+        console.log('getChecksByTag Service: ' + error);
+    }
+};
+
+module.exports = {createCheck, getCheck, updateCheck, deleteCheck, getChecksByTag};

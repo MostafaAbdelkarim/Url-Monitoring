@@ -4,26 +4,32 @@ const jwtDecode = require('jwt-decode');
 
 const getReport = async (req, res) => {
     try{
-        //decode jwt token to get userId
-        //search check collection by given checkId in req.body else return
-        //check if checkId in userId else return
-        //query report by checkId else return
-        //return report
+        const token = req.cookies['jwtToken'];
+        const userPayload = jwtDecode(token);
+        
+        const check = await Check.findById(userPayload._id);
+        if(!check) return error = { message: 'Report not found!'};
+
+        let report = await Report.findOne({checkId: userPayload._id});
+        if(!report) return error = { message: 'Report not found!'};
+
+        return report;
     }
     catch(error){
-        //log error
+       console.log('getReport Service: ' + error);
     }
 };
 
+//reports does not have tag attribute unless needed to implement getting checks by tags then responding with found reports.
 const getReportsByTag = async (req, res) => {
     try{
         //same logic as above
-        //save all checks found in db in array using their tag value provided in req.body
+        //get all checks found in db in array using their tag value provided in req.body
         //search in report collection by providing checks array else return
         //return reportsByTag
     }
     catch(error){
-        //log error
+        console.log('getReportsByTag Service: ' + error);
     }
 };
 

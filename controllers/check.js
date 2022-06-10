@@ -3,9 +3,9 @@ const _ = require('lodash');
 
 const createCheck = async (req, res) => {
     try{
-        const {check, report, error} = result = await CheckService.createCheck(req.body);
-        if(result.message) return res.status(400).send(result.message);
-        return res.status(201).send(_.pick(result.check, ['name', 'url']));
+        const {check, report, error} = await CheckService.createCheck(req.body);
+        if(error) return res.status(400).send(error.message);
+        return res.status(201).send(_.pick(check, ['name', 'url']));
     }
     catch (error){
         console.log(error);
@@ -49,4 +49,16 @@ const deleteCheck = async (req, res) => {
     };
 };
 
-module.exports = {createCheck, getCheck, updateCheck, deleteCheck};
+const getChecksByTag = async (req, res) => {
+    try{
+        const {check, error} = await CheckService.updateCheck(req);
+        if(error) return res.status(400).send(error.message);
+        res.status(200).send(check);
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    };
+};
+
+module.exports = {createCheck, getCheck, updateCheck, deleteCheck, getChecksByTag};

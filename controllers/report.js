@@ -3,8 +3,9 @@ const _ = require('lodash');
 
 const getReport = async (req, res) => {
     try{
-        const user = ReportService.getReport(req);
-        res.status(200).send(user);
+        const { report, error} = ReportService.getReport();
+        if(error) return res.status(400).send(error.message);
+        res.status(200).send(report);
     }
     catch(error){
         console.log(error);
@@ -15,8 +16,9 @@ const getReport = async (req, res) => {
 
 const getReportsByTag = async (req, res) => {
     try{
-        const user = await ReportService.getReportsByTag(req);
-        res.status(200).send(user);
+        const { report, error} = ReportService.getReport(req);
+        if(error) return res.status(400).send(error.message);
+        res.status(200).send(report);
     }
     catch(error){
         console.log(error);
