@@ -1,6 +1,8 @@
 const {Report} = require('../models/report');
 const Check = require('../models/check');
 const jwtDecode = require('jwt-decode');
+const _ = require('lodash');
+const axios = require('axios');
 
 const getReport = async (req, res) => {
     try{
@@ -38,4 +40,16 @@ const getReportsByTag = async (req, res) => {
     }
 };
 
-module.exports = {getReport, getReportsByTag};
+const scheduledUpdateForReports = async (req, res) => {
+    try{
+        //get all urls from all checks
+        //for each url, calculate the status for the report aka (outages, downtime .. etc) using axios
+        //save each report to db after edit.
+        //this function is bound to get called and updated every x time using node-cron jobs.
+    }
+    catch(error){
+        console.log('scheduledUpdateForReports error: ' + error)
+    }
+};
+
+module.exports = {getReport, getReportsByTag, scheduledUpdateForReports};

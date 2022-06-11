@@ -6,7 +6,9 @@ const reportRouter = require('./routes/report');
 const config = require('config');
 const cookieParser = require('cookie-parser');
 const swaggerUI = require("swagger-ui-express");
-const {swaggerConfig} = require('./config/swaggerConfig');
+const swaggerConfig = require('./config/swaggerConfig');
+const cronJob = require('./config/CronJob');
+
 require("./db/db"); // importing DB
 
 
@@ -15,10 +17,12 @@ if(!config.get('jwtPrivateKey')){
     process.exit(1);
 };
 
+cronJob.startJob;
 
 app.use(cookieParser());
 app.use(express.json());
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerConfig));
+app.use(express.urlencoded({ extended: false }));
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerConfig));
 app.use('/api/users', userRouter);
 app.use('/api/checks', checkRouter);
 app.use('/api/reports', reportRouter);

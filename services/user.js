@@ -25,8 +25,7 @@ const createUser = async (req, res) => {
     const mailOptions = emailVerifier.mailOptions(user.email, user.name, user.emailToken);
     emailSent = emailVerifier.sendCustomMail(mailOptions);
 
-    const token = user.generateAuthToken();
-    return {user, token};
+    return {user};
 };
 
 const getAllUsers = async () => {
@@ -84,6 +83,7 @@ const loginUser = async (req, res) => {
         if(!validPass) return error = { message: 'Password Incorrect.'};
 
         const token = user.generateAuthToken();
+        
         return {token, user} ;
     } catch (error) {
         console.log(error);

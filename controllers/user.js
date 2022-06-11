@@ -4,7 +4,7 @@ const _ = require('lodash');
 
 const createUser = async (req, res) => {
     try{
-        const result = {user, token, error} = await UserService.createUser(req.body);
+        const result = {user, error} = await UserService.createUser(req.body);
         if(result.message) return res.status(400).send(result.message);
         return res.status(201).send(_.pick(result.user, ['_id', 'name', 'email']));
     }
