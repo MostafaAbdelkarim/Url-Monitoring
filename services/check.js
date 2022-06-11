@@ -28,10 +28,7 @@ const createCheck = async (req, res) => {
             timeout: req.body.timout,
             interval: req.body.interval,
             threshold: req.body.threshold,
-            authentication: {
-                username: req.body.authentication.username,
-                password: req.body.authentication.password
-            },
+
             httpHeaders: req.body.httpHeaders,
             assert: {
                 statusCode: req.body.statusCode
