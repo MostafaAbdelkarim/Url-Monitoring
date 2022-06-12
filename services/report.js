@@ -59,10 +59,10 @@ const scheduledUpdateForReports = async (req, res) => {
             if(result.status === 200){
                 report = await report.findOneAndUpdate({checkId: checks[i]._id},{
                     status: 200,
-                    availability: (uptime / (uptime + report.downtime)) * 100,
-                    outages: 0,
-                    downtime: 0,
-                    uptime: uptime + 1, 
+                    availability: (report.uptime / (report.uptime + report.downtime)) * 100,
+                    outages: report.outages,
+                    downtime: report.outages,
+                    uptime: report.uptime + 1, 
                     responseTime: 1,
                     history: Date.now() + ' OK'
                 });
@@ -70,10 +70,10 @@ const scheduledUpdateForReports = async (req, res) => {
             else{
                 report = await report.findOneAndUpdate({checkId: checks[i]._id}, {
                     status: result.status,
-                    availability: (report.uptime / (report.uptime + downtime)) * 100,
-                    outages: outages + 1,
-                    downtime: downtime + 1,
-                    uptime: uptime - 1, 
+                    availability: (report.uptime / (report.uptime + report.downtime)) * 100,
+                    outages: report.outages + 1,
+                    downtime: report.downtime + 1,
+                    uptime: report.uptime - 1, 
                     responseTime: 0,
                     history: Date.now() + ' Not OK'
                 });
